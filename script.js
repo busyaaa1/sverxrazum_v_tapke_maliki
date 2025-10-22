@@ -22,8 +22,8 @@ const levels = {
         clickSound: 'sounds/click.mp3',
         winSound: 'sounds/win.mp3',
         loseSound: 'sounds/lose.mp3',
-        popupText: '🌊 Level 1: Ocean Memory Adventure 🐠<br>Find pairs of identical cards featuring sea creatures by turning them over one at a time. Remember their locations to collect all the pairs before time runs out. Get immersed in the game and good luck! ✨',
-        stickers: ['🐠', '🐳', '🦞', '🌊']
+        popupText: '🌊 Level 1: Ocean Memory Adventure 🐠<br>Find pairs of identical cards featuring sea creatures by turning them over one at a time. Remember their locations to collect all the pairs before time runs out. Get immersed in the game and good luck! 🐚',
+        stickers: ['🦪', '🦀', '🦞', '🌊']
     },
     2: {
         cardsArray: [
@@ -235,4 +235,5 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('timer').classList.remove('hidden');
     });
     document.addEventListener('click', startMusicOnce);
+
 });
