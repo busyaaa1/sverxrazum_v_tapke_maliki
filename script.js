@@ -49,7 +49,7 @@ const levels = {
         timeLimit: 120,
         bgMusic: 'space.mp3',
         clickSound: 'sounds/click.mp3',
-        winSound: 'souns/win-2.mp3',
+        winSound: 'sounds/win-2.mp3',
         loseSound: 'sounds/game-over.mp3',
         popupText: '🚀 Level 2: UFO Memory Mission 👽<br>Your goal is to find all the pairs of identical UFO cards by turning them over one at a time. Click on the cards to see their images and remember their positions. If you find two identical cards, they remain face up. Collect all the pairs before time runs out! Good luck on your space adventure! 🌌',
         stickers: ['👽', '🛸', '🌌', '🌠']
@@ -61,10 +61,10 @@ let firstCard = null, secondCard = null, lockBoard = false, timerStarted = false
 let timeLeft, matchedPairs = 0, totalPairs, timerInterval;
 
 function initLevel(level) {
-    console.log(`Работает уровень ${level}`);
+    console.log(`Работает ${level}`);
     const levelData = levels[level];
     if (!levelData) {
-        console.error(`Уровень ${level} не найден!`);
+        console.error(`${level} НЕ РАБОТАЕТ!`);
         return;
     }
 
@@ -86,12 +86,13 @@ function initLevel(level) {
     gameOverEl.style.background = '';
     winnerEl.style.background = '';
 
+    // Обнуляем таймер и обновляем его отображение
     const timerEl = document.getElementById('timer');
-    timerEl.textContent = `Время: ${Math.floor(levelData.timeLimit / 60)}:${(levelData.timeLimit % 60).toString().padStart(2, '0')}`;
+    timerEl.textContent = `Time: ${Math.floor(levelData.timeLimit / 60)}:${(levelData.timeLimit % 60).toString().padStart(2, '0')}`;
     timerEl.classList.add('hidden');
 
     document.body.className = `level-${level}`;
-    document.getElementById('level-indicator').textContent = `Уровень: ${level}`;
+    document.getElementById('level-indicator').textContent = `Level: ${level}`;
 
     document.querySelector('.popup-content h2').innerHTML = levelData.popupText;
     document.querySelector('.popup-instruction').style.display = 'flex';
@@ -107,6 +108,7 @@ function initLevel(level) {
     clickSound.src = levelData.clickSound;
     winSound.src = levelData.winSound;
     loseSound.src = levelData.loseSound;
+    bgMusic.play().catch(e => console.error('Ошибка в bgmusic', e));
 
     const gameBoard = document.querySelector('.game-board');
     gameBoard.classList.add('hidden');
@@ -117,7 +119,7 @@ function initLevel(level) {
             const cardElement = document.createElement('div');
             cardElement.classList.add('card');
             cardElement.dataset.name = card.name;
-            cardElement.innerHTML = `<img src="${card.img}" alt="${card.name}" onerror="this.src='images/fallback.png'">`;
+            cardElement.innerHTML = `<img src="${card.img}" alt="${card.name}">`;
             cardElement.addEventListener('click', flipCard);
             gameBoard.appendChild(cardElement);
         });
@@ -127,10 +129,7 @@ function initLevel(level) {
     levelData.cardsArray.forEach(card => {
         const img = new Image();
         img.src = card.img;
-        img.onerror = () => {
-            console.error(`Ошибка загрузки изображения: ${card.img}`);
-            img.src = 'images/fallback.png';
-        };
+        img.onerror = () => console.error(`Ошибка при: ${card.img}`);
     });
 }
 
@@ -142,7 +141,7 @@ function flipCard() {
         startTimer();
     }
 
-    document.getElementById('click-sound').play().catch(e => console.error('Ошибка звука клика:', e));
+    document.getElementById('click-sound').play().catch(e => console.error('Звук клика не работает!', e));
     this.classList.add('flipped');
 
     if (!firstCard) {
@@ -183,7 +182,7 @@ function startTimer() {
     timerEl.classList.remove('hidden');
     timerInterval = setInterval(() => {
         timeLeft--;
-        timerEl.textContent = `Время: ${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`;
+        timerEl.textContent = `Time: ${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`;
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
             showGameOver();
@@ -197,36 +196,34 @@ function showGameOver() {
     gameOverEl.classList.remove('hidden');
     gameOverEl.innerHTML = `
         <img src="game_over.webp" alt="Game Over" class="shaking">
-        <button class="refresh-button" onclick="initLevel(${currentLevel})">Повторить</button>
+        <button class="refresh-button" onclick="initLevel(${currentLevel})">Retry</button>
     `;
-    document.getElementById('lose-sound').play().catch(e => console.error('Ошибка звука проигрыша:', e));
+    document.getElementById('lose-sound').play().catch(e => console.error('Звук проигрыша не работает!', e));
 }
 
 function showWinner() {
-    console.log(`Показ окна победы для уровня ${currentLevel}`);
+    console.log(`Показывать окно победыl ${currentLevel}`);
     const winnerEl = document.getElementById('winner');
     winnerEl.style.background = '';
     winnerEl.classList.remove('hidden');
     const nextButton = currentLevel < Object.keys(levels).length
-        ? `<button class="next-button" onclick="goToNextLevel()">Next level</button>`
-        : `<p>Congratulations! You've completed all the levels! 🎉</p>`;
+        ? `<button class="next-button" onclick="goToNextLevel()">Next Level</button>`
+        : '';
     winnerEl.innerHTML = `
         <img src="winner.webp" alt="Winner" class="shaking">
-        <button class="refresh-button" onclick="initLevel(${currentLevel})">Играть заново</button>
+        <button class="refresh-button" onclick="initLevel(${currentLevel})">Replay</button>
         ${nextButton}
     `;
-    document.getElementById('win-sound').play().catch(e => console.error('Ошибка звука победы:', e));
+    document.getElementById('win-sound').play().catch(e => console.error('Звук выигрыша не работает', e));
 }
 
 function goToNextLevel() {
-    console.log(`Переход на уровень ${currentLevel + 1}`);
+    console.log(`Следующий левел ${currentLevel + 1}`);
     initLevel(currentLevel + 1);
 }
 
 function startMusicOnce() {
-    const bgMusic = document.getElementById('bg-music');
-    if (!bgMusic.paused) return;
-    bgMusic.play().catch(e => console.error('Ошибка автопроигрывания музыки:', e));
+    document.getElementById('bg-music').play().catch(e => console.error('Автопроигрывание песни не работает', e));
     document.removeEventListener('click', startMusicOnce);
 }
 
@@ -236,9 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('start-game').addEventListener('click', () => {
         popup.style.display = 'none';
         document.getElementById('timer').classList.remove('hidden');
-        if (timerInterval) clearInterval(timerInterval);
-        startTimer();
     });
     document.addEventListener('click', startMusicOnce);
 });
-
