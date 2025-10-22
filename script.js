@@ -19,9 +19,9 @@ const levels = {
         ],
         timeLimit: 120,
         bgMusic: 'music.mp3',
-        clickSound: 'click.mp3',
-        winSound: 'win.mp3',
-        loseSound: 'lose.mp3',
+        clickSound: 'sounds/click.mp3',
+        winSound: 'sounds/win.mp3',
+        loseSound: 'sounds/lose.mp3',
         popupText: '🌊 Level 1: Ocean Memory Adventure 🐠<br>Find pairs of identical cards featuring sea creatures by turning them over one at a time. Remember their locations to collect all the pairs before time runs out. Get immersed in the game and good luck! 🐚',
         stickers: ['🦪', '🦀', '🦞', '🌊']
     },
@@ -48,9 +48,9 @@ const levels = {
         ],
         timeLimit: 120,
         bgMusic: 'space.mp3',
-        clickSound: 'click.mp3',
-        winSound: 'win-2.mp3',
-        loseSound: 'game-over.mp3',
+        clickSound: 'sounds/click.mp3',
+        winSound: 'souns/win-2.mp3',
+        loseSound: 'sounds/game-over.mp3',
         popupText: '🚀 Level 2: UFO Memory Mission 👽<br>Your goal is to find all the pairs of identical UFO cards by turning them over one at a time. Click on the cards to see their images and remember their positions. If you find two identical cards, they remain face up. Collect all the pairs before time runs out! Good luck on your space adventure! 🌌',
         stickers: ['👽', '🛸', '🌌', '🌠']
     }
@@ -208,8 +208,8 @@ function showWinner() {
     winnerEl.style.background = '';
     winnerEl.classList.remove('hidden');
     const nextButton = currentLevel < Object.keys(levels).length
-        ? `<button class="next-button" onclick="goToNextLevel()">Следующий уровень</button>`
-        : `<p>Поздравляем! Вы прошли все уровни! 🎉</p>`;
+        ? `<button class="next-button" onclick="goToNextLevel()">Next level</button>`
+        : `<p>Congratulations! You've completed all the levels! 🎉</p>`;
     winnerEl.innerHTML = `
         <img src="winner.webp" alt="Winner" class="shaking">
         <button class="refresh-button" onclick="initLevel(${currentLevel})">Играть заново</button>
@@ -241,3 +241,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.addEventListener('click', startMusicOnce);
 });
+
